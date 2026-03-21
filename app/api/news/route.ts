@@ -7,7 +7,7 @@ export async function GET() {
   }
 
   const query = encodeURIComponent(
-    "commercial aviation OR airline OR aircraft OR Boeing OR Airbus OR airport"
+    "commercial aviation" OR "airline" OR "airlines" OR airport OR "american airlines" OR "Delta Airlines" OR "United Airlines" OR "Southwest Airlines" OR "Air Canada" OR "FAA" OR easyJet
   );
   const url = `https://newsapi.org/v2/everything?q=${query}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${apiKey}`;
 
