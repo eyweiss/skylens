@@ -13,7 +13,7 @@ interface Article {
 
 type Category = "All" | "Airlines" | "Airports" | "OEMs" | "Regulation" | "Safety" | "Sustainability" | "General";
 
-const CATEGORIES: { name: Category; keywords: string[]; color: string; bg: string }[] = [
+const CATEGORIES: { name: Exclude<Category, "All">; keywords: string[]; color: string; bg: string }[] = [
   {
     name: "Airlines",
     keywords: ["airline", "airlines", "carrier", "fleet", "passenger", "flight", "route"],

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls D:PyscriptsUAS-siteskylens/*.env* D:PyscriptsUAS-siteskylens/.env*)"
+      "Bash(ls D:PyscriptsUAS-siteskylens/*.env* D:PyscriptsUAS-siteskylens/.env*)",
+      "Bash(npm run:*)"
     ]
   }
 }
