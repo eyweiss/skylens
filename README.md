@@ -1,5 +1,19 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```
+# Google Alerts RSS feeds (up to 8)
+GOOGLE_ALERTS_RSS_1=<your_google_alerts_rss_url>
+GOOGLE_ALERTS_RSS_2=<your_google_alerts_rss_url>
+# ... up to GOOGLE_ALERTS_RSS_8
+
+# Anthropic Claude API key (used for Weekly Intelligence Brief)
+ANTHROPIC_API_KEY=<your_anthropic_api_key>
+```
+
 ## Getting Started
 
 First, run the development server:

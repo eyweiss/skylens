@@ -1,7 +1,43 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { RefreshCw, ExternalLink, Calendar, Newspaper } from "lucide-react";
+import { RefreshCw, ExternalLink, Calendar, Newspaper, Sparkles } from "lucide-react";
+
+const SIGNAL_COLORS: Record<string, string> = {
+  "MARKET ALERT":    "#dc2626",
+  "COMPETITOR MOVE": "#ea580c",
+  "OPPORTUNITY":     "#16a34a",
+  "REGULATORY":      "#2563eb",
+  "TREND":           "#7c3aed",
+};
+
+function parseBullets(text: string): { signal: string; rest: string }[] {
+  return text
+    .split("\n")
+    .filter((line) => line.trim().startsWith("•"))
+    .map((line) => {
+      const content = line.replace(/^[•\s]+/, "");
+      const colonIdx = content.indexOf(":");
+      if (colonIdx === -1) return { signal: "", rest: content };
+      return {
+        signal: content.slice(0, colonIdx).trim(),
+        rest: content.slice(colonIdx + 1).trim(),
+      };
+    });
+}
+
+function BriefSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="flex gap-2 animate-pulse">
+          <div className="w-24 h-4 rounded flex-shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.1)" }} />
+          <div className="flex-1 h-4 rounded" style={{ backgroundColor: "rgba(255,255,255,0.1)" }} />
+        </div>
+      ))}
+    </div>
+  );
+}
 
 interface Article {
   title: string;
@@ -95,6 +131,30 @@ export function RecentNews() {
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
   const [activeFilter, setActiveFilter] = useState<Category>("All");
 
+  const [brief, setBrief] = useState<string | null>(null);
+  const [briefLoading, setBriefLoading] = useState(false);
+  const [briefError, setBriefError] = useState<string | null>(null);
+
+  const fetchBrief = useCallback(async (articleList: Article[]) => {
+    if (articleList.length === 0) return;
+    setBriefLoading(true);
+    setBriefError(null);
+    try {
+      const res = await fetch("/api/intelligence-brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ articles: articleList.slice(0, 15) }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+      setBrief(data.brief ?? null);
+    } catch (err) {
+      setBriefError(err instanceof Error ? err.message : "Failed to generate brief");
+    } finally {
+      setBriefLoading(false);
+    }
+  }, []);
+
   const fetchNews = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -105,14 +165,16 @@ export function RecentNews() {
         throw new Error(data.error || `HTTP ${res.status}`);
       }
       const data = await res.json();
-      setArticles(data.articles || []);
+      const fetched: Article[] = data.articles || [];
+      setArticles(fetched);
       setLastFetched(new Date());
+      fetchBrief(fetched);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch news");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [fetchBrief]);
 
   useEffect(() => {
     fetchNews();
@@ -167,6 +229,72 @@ export function RecentNews() {
           Refresh
         </button>
       </div>
+
+      {/* Intelligence Brief */}
+      {(briefLoading || brief || briefError) && (
+        <div
+          className="p-5 rounded-xl border relative"
+          style={{
+            background: "linear-gradient(135deg, rgba(37,99,235,0.10) 0%, rgba(124,58,237,0.08) 100%)",
+            borderColor: "rgba(37,99,235,0.25)",
+          }}
+        >
+          {/* Header row */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4" style={{ color: "#2563eb" }} />
+              <span className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
+                Weekly Intelligence Brief
+              </span>
+              <span
+                className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                style={{ backgroundColor: "rgba(37,99,235,0.15)", color: "#2563eb" }}
+              >
+                AI Generated
+              </span>
+            </div>
+            <button
+              onClick={() => fetchBrief(articles)}
+              disabled={briefLoading}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors disabled:opacity-50"
+              style={{
+                backgroundColor: "transparent",
+                color: "var(--muted)",
+                borderColor: "rgba(37,99,235,0.25)",
+              }}
+            >
+              <RefreshCw className={`w-3 h-3 ${briefLoading ? "animate-spin" : ""}`} />
+              Refresh
+            </button>
+          </div>
+
+          {/* Content */}
+          {briefLoading && <BriefSkeleton />}
+
+          {briefError && !briefLoading && (
+            <p className="text-xs" style={{ color: "#ea580c" }}>{briefError}</p>
+          )}
+
+          {brief && !briefLoading && (
+            <ul className="space-y-2.5">
+              {parseBullets(brief).map((bullet, i) => {
+                const color = SIGNAL_COLORS[bullet.signal] ?? "var(--muted)";
+                return (
+                  <li key={i} className="flex gap-2 text-sm leading-snug">
+                    <span
+                      className="font-bold flex-shrink-0 text-xs mt-0.5"
+                      style={{ color, minWidth: "110px" }}
+                    >
+                      {bullet.signal || "•"}
+                    </span>
+                    <span style={{ color: "var(--foreground)" }}>{bullet.rest}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      )}
 
       {/* Category filters */}
       <div className="flex gap-2 flex-wrap">

@@ -3,7 +3,8 @@
     "allow": [
       "Bash(ls D:PyscriptsUAS-siteskylens/*.env* D:PyscriptsUAS-siteskylens/.env*)",
       "Bash(npm run:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(node:*)"
     ]
   }
 }
