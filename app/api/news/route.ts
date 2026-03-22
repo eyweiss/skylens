@@ -1,86 +1,58 @@
 import { NextResponse } from "next/server";
 
-interface Article {
-  title: string;
-  url: string;
-  publishedAt: string;
-  description: string;
-  source: { name: string };
-}
-
-function extractText(xml: string, tag: string): string {
-  const cdataMatch = new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></${tag}>`, "i").exec(xml);
-  if (cdataMatch) return cdataMatch[1].trim();
-  const match = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, "i").exec(xml);
-  return match ? match[1].trim() : "";
-}
-
-function parseRSSItems(xml: string): Article[] {
-  const items: Article[] = [];
-  const itemRegex = /<item>([\s\S]*?)<\/item>/gi;
-  let match;
-  while ((match = itemRegex.exec(xml)) !== null) {
-    const block = match[1];
-    const title = extractText(block, "title");
-    const link = extractText(block, "link") || extractText(block, "guid");
-    const pubDate = extractText(block, "pubDate");
-    const description = extractText(block, "description");
-    if (!title || !link) continue;
-    items.push({
-      title,
-      url: link,
-      publishedAt: pubDate ? new Date(pubDate).toISOString() : new Date(0).toISOString(),
-      description,
-      source: { name: "Google Alerts" },
-    });
-  }
-  return items;
-}
+const NEWSAPI_QUERY =
+  "commercial aviation OR airline OR airlines OR airport OR Boeing OR Airbus OR FAA OR EASA";
 
 export async function GET() {
-  const feedUrls: string[] = [];
-  for (let i = 1; i <= 8; i++) {
-    const val = process.env[`GOOGLE_ALERTS_RSS_${i}`];
-    if (val) feedUrls.push(val);
-  }
+  const apiKey = process.env.NEWSAPI_KEY;
 
-  if (feedUrls.length === 0) {
+  if (!apiKey) {
     return NextResponse.json(
-      { error: "No Google Alerts RSS feeds configured. Set GOOGLE_ALERTS_RSS_1 through GOOGLE_ALERTS_RSS_8 environment variables." },
+      { error: "NEWSAPI_KEY environment variable is not set." },
       { status: 500 }
     );
   }
 
-  console.log(`[/api/news] Fetching ${feedUrls.length} Google Alerts RSS feed(s)`);
+  const url = new URL("https://newsapi.org/v2/everything");
+  url.searchParams.set("q", NEWSAPI_QUERY);
+  url.searchParams.set("language", "en");
+  url.searchParams.set("sortBy", "publishedAt");
+  url.searchParams.set("pageSize", "20");
+
+  console.log("[/api/news] Fetching from NewsAPI");
 
   try {
-    const results = await Promise.allSettled(
-      feedUrls.map((url) => fetch(url, { next: { revalidate: 300 } }))
-    );
+    const res = await fetch(url.toString(), {
+      headers: { "X-Api-Key": apiKey },
+      next: { revalidate: 1800 },
+    });
 
-    const articles: Article[] = [];
-    for (let i = 0; i < results.length; i++) {
-      const result = results[i];
-      if (result.status === "rejected") {
-        console.error(`[/api/news] Feed ${i + 1} fetch failed:`, result.reason);
-        continue;
-      }
-      const res = result.value;
-      if (!res.ok) {
-        console.error(`[/api/news] Feed ${i + 1} returned status ${res.status}`);
-        continue;
-      }
-      const xml = await res.text();
-      const items = parseRSSItems(xml);
-      console.log(`[/api/news] Feed ${i + 1}: ${items.length} items`);
-      articles.push(...items);
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("[/api/news] NewsAPI error:", data);
+      return NextResponse.json(
+        { error: data.message || `NewsAPI returned status ${res.status}` },
+        { status: res.status }
+      );
     }
 
-    articles.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
-    const top30 = articles.slice(0, 30);
+    const articles = (data.articles ?? []).map((a: {
+      title: string;
+      source: { name: string };
+      url: string;
+      publishedAt: string;
+      description: string | null;
+    }) => ({
+      title: a.title,
+      source: { name: a.source?.name ?? "Unknown" },
+      url: a.url,
+      publishedAt: a.publishedAt,
+      description: a.description ?? null,
+    }));
 
-    console.log(`[/api/news] Total articles returned: ${top30.length}`);
-    return NextResponse.json({ articles: top30 });
+    console.log(`[/api/news] Articles returned: ${articles.length}`);
+    return NextResponse.json({ articles });
   } catch (err) {
     console.error("[/api/news] Unexpected error:", err);
     return NextResponse.json(
