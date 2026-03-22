@@ -560,12 +560,37 @@ export function RequestCoverage() {
   const [reason, setReason] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const showOtherInput = playerType === "Other" || oem === "Other (please specify)";
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError(null);
+
+    const selectedPlayer =
+      playerType === "Airline" ? airline :
+      playerType === "Airport" ? airport :
+      playerType === "OEM" ? oem : "";
+
+    try {
+      const res = await fetch("https://formspree.io/f/xpqygayl", {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({ playerType, selectedPlayer, otherPlayer: otherText, reason, email }),
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -754,13 +779,19 @@ export function RequestCoverage() {
             />
           </div>
 
+          {/* Error */}
+          {error && (
+            <p className="text-sm" style={{ color: "#dc2626" }}>{error}</p>
+          )}
+
           {/* Submit */}
           <button
             type="submit"
-            className="px-5 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80"
+            disabled={submitting}
+            className="px-5 py-2 rounded-lg text-sm font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
             style={{ backgroundColor: "var(--accent)", color: "#fff" }}
           >
-            Submit Request
+            {submitting ? "Submitting…" : "Submit Request"}
           </button>
 
         </form>
