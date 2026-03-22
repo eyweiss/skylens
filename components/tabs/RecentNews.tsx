@@ -200,10 +200,6 @@ export function RecentNews() {
             Could not load news
           </div>
           <div>{error}</div>
-          <div className="mt-2 text-xs">
-            Make sure <code className="px-1 rounded" style={{ backgroundColor: "var(--border)" }}>NEWSAPI_KEY</code> is
-            set in your environment variables.
-          </div>
         </div>
       )}
 
