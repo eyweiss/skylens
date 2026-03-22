@@ -10,6 +10,7 @@ import { Airports } from "@/components/tabs/Airports";
 import { CompetitorSpotlight } from "@/components/tabs/CompetitorSpotlight";
 import { CountryProfiles } from "@/components/tabs/CountryProfiles";
 import { RecentNews } from "@/components/tabs/RecentNews";
+import { RequestCoverage } from "@/components/tabs/RequestCoverage";
 import { About } from "@/components/tabs/About";
 
 type Tab =
@@ -20,6 +21,7 @@ type Tab =
   | "Competitor Spotlight"
   | "Country Profiles"
   | "Recent News"
+  | "Request Coverage"
   | "About";
 
 const tabs: Tab[] = [
@@ -30,6 +32,7 @@ const tabs: Tab[] = [
   "Competitor Spotlight",
   "Country Profiles",
   "Recent News",
+  "Request Coverage",
   "About",
 ];
 
@@ -41,6 +44,7 @@ const tabComponents: Record<Tab, React.ComponentType> = {
   "Competitor Spotlight": CompetitorSpotlight,
   "Country Profiles": CountryProfiles,
   "Recent News": RecentNews,
+  "Request Coverage": RequestCoverage,
   About: About,
 };
 
