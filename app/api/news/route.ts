@@ -29,6 +29,12 @@ function stripHtml(text: string): string {
     .trim();
 }
 
+function sourceFromTitle(title: string): string | null {
+  // Google Alerts titles often end with " - Source Name"
+  const match = / - ([^-]+)$/.exec(title);
+  return match ? match[1].trim() : null;
+}
+
 function sourceFromUrl(articleUrl: string): string {
   try {
     const hostname = new URL(articleUrl).hostname.replace(/^www\./, "");
@@ -44,9 +50,11 @@ async function fetchFeed(url: string): Promise<Article[]> {
     console.log(`[/api/news] Feed ${url.slice(-40)} returned ${feed.items.length} items`);
     return feed.items.map((item) => {
       const link = item.link ?? "";
+      const rawTitle = item.title ?? "";
+      const sourceName = sourceFromTitle(rawTitle) ?? sourceFromUrl(link);
       return {
-        title: stripHtml(item.title ?? ""),
-        source: { name: sourceFromUrl(link) },
+        title: stripHtml(rawTitle.replace(/ - [^-]+$/, "")),
+        source: { name: sourceName },
         url: link,
         publishedAt: item.pubDate
           ? new Date(item.pubDate).toISOString()
