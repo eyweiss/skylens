@@ -16,7 +16,7 @@ function parseBullets(text: string): { signal: string; rest: string }[] {
     .split("\n")
     .filter((line) => line.trim().startsWith("•"))
     .map((line) => {
-      const content = line.replace(/^[•\s]+/, "");
+      const content = line.replace(/^[•\s]+/, "").replace(/\*\*/g, "");
       const colonIdx = content.indexOf(":");
       if (colonIdx === -1) return { signal: "", rest: content };
       return {
@@ -28,11 +28,18 @@ function parseBullets(text: string): { signal: string; rest: string }[] {
 
 function BriefSkeleton() {
   return (
-    <div className="space-y-3">
+    <div className="space-y-0">
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="flex gap-2 animate-pulse">
-          <div className="w-24 h-4 rounded flex-shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.1)" }} />
-          <div className="flex-1 h-4 rounded" style={{ backgroundColor: "rgba(255,255,255,0.1)" }} />
+        <div
+          key={i}
+          className="flex items-start gap-4 px-5 py-4 animate-pulse"
+          style={{ borderTop: i > 0 ? "1px solid rgba(255,255,255,0.08)" : "none" }}
+        >
+          <div className="w-28 h-5 rounded-full flex-shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.12)" }} />
+          <div className="flex-1 space-y-2">
+            <div className="h-3.5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.10)", width: "90%" }} />
+            <div className="h-3.5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.07)", width: "65%" }} />
+          </div>
         </div>
       ))}
     </div>
@@ -99,13 +106,13 @@ function detectCategory(title: string, description: string | null): Exclude<Cate
 }
 
 const CATEGORY_STYLE: Record<Exclude<Category, "All">, { color: string; bg: string }> = {
-  Airlines:       { color: "#2563eb", bg: "rgba(37,99,235,0.12)" },
-  Airports:       { color: "#7c3aed", bg: "rgba(124,58,237,0.12)" },
-  OEMs:           { color: "#ea580c", bg: "rgba(234,88,12,0.12)" },
-  Regulation:     { color: "#dc2626", bg: "rgba(220,38,38,0.12)" },
-  Safety:         { color: "#ca8a04", bg: "rgba(202,138,4,0.12)" },
-  Sustainability: { color: "#16a34a", bg: "rgba(22,163,74,0.12)" },
-  General:        { color: "#6b7280", bg: "rgba(107,114,128,0.12)" },
+  Airlines:       { color: "#fff", bg: "#2563eb" },
+  Airports:       { color: "#fff", bg: "#7c3aed" },
+  OEMs:           { color: "#fff", bg: "#ea580c" },
+  Regulation:     { color: "#fff", bg: "#dc2626" },
+  Safety:         { color: "#fff", bg: "#d97706" },
+  Sustainability: { color: "#fff", bg: "#16a34a" },
+  General:        { color: "#fff", bg: "#6b7280" },
 };
 
 const FILTER_OPTIONS: Category[] = ["All", "Airlines", "Airports", "OEMs", "Regulation", "Safety", "Sustainability"];
@@ -233,22 +240,27 @@ export function RecentNews() {
       {/* Intelligence Brief */}
       {(briefLoading || brief || briefError) && (
         <div
-          className="p-5 rounded-xl border relative"
+          className="rounded-2xl overflow-hidden"
           style={{
-            background: "linear-gradient(135deg, rgba(37,99,235,0.10) 0%, rgba(124,58,237,0.08) 100%)",
-            borderColor: "rgba(37,99,235,0.25)",
+            background: "linear-gradient(150deg, #0c1a3d 0%, #1e3a5f 100%)",
+            boxShadow: "0 4px 32px rgba(12,26,61,0.45)",
           }}
         >
-          {/* Header row */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4" style={{ color: "#2563eb" }} />
-              <span className="text-sm font-bold" style={{ color: "var(--foreground)" }}>
+          {/* Card header */}
+          <div className="flex items-center justify-between px-6 pt-5 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+            <div className="flex items-center gap-3">
+              <Sparkles className="w-4 h-4" style={{ color: "#60a5fa" }} />
+              <span className="text-base font-bold tracking-tight" style={{ color: "#fff" }}>
                 Weekly Intelligence Brief
               </span>
               <span
-                className="px-2 py-0.5 rounded-full text-xs font-semibold"
-                style={{ backgroundColor: "rgba(37,99,235,0.15)", color: "#2563eb" }}
+                className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                style={{
+                  backgroundColor: "rgba(96,165,250,0.18)",
+                  color: "#93c5fd",
+                  boxShadow: "0 0 8px rgba(96,165,250,0.25)",
+                  border: "1px solid rgba(96,165,250,0.25)",
+                }}
               >
                 AI Generated
               </span>
@@ -256,11 +268,11 @@ export function RecentNews() {
             <button
               onClick={() => fetchBrief(articles)}
               disabled={briefLoading}
-              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-70 disabled:opacity-40"
               style={{
                 backgroundColor: "transparent",
-                color: "var(--muted)",
-                borderColor: "rgba(37,99,235,0.25)",
+                color: "rgba(255,255,255,0.65)",
+                border: "1px solid rgba(255,255,255,0.2)",
               }}
             >
               <RefreshCw className={`w-3 h-3 ${briefLoading ? "animate-spin" : ""}`} />
@@ -272,27 +284,48 @@ export function RecentNews() {
           {briefLoading && <BriefSkeleton />}
 
           {briefError && !briefLoading && (
-            <p className="text-xs" style={{ color: "#ea580c" }}>{briefError}</p>
+            <div className="px-6 py-5">
+              <p className="text-sm" style={{ color: "#fca5a5" }}>{briefError}</p>
+            </div>
           )}
 
           {brief && !briefLoading && (
-            <ul className="space-y-2.5">
+            <ul>
               {parseBullets(brief).map((bullet, i) => {
-                const color = SIGNAL_COLORS[bullet.signal] ?? "var(--muted)";
+                const signalColor = SIGNAL_COLORS[bullet.signal] ?? "#6b7280";
                 return (
-                  <li key={i} className="flex gap-2 text-sm leading-snug">
+                  <li
+                    key={i}
+                    className="flex items-start gap-4 px-6 py-4"
+                    style={{ borderTop: i > 0 ? "1px solid rgba(255,255,255,0.07)" : "none" }}
+                  >
                     <span
-                      className="font-bold flex-shrink-0 text-xs mt-0.5"
-                      style={{ color, minWidth: "110px" }}
+                      className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide mt-0.5"
+                      style={{
+                        backgroundColor: `${signalColor}28`,
+                        color: signalColor,
+                        border: `1px solid ${signalColor}55`,
+                        minWidth: "120px",
+                        textAlign: "center",
+                      }}
                     >
-                      {bullet.signal || "•"}
+                      {bullet.signal || "NOTE"}
                     </span>
-                    <span style={{ color: "var(--foreground)" }}>{bullet.rest}</span>
+                    <span className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.88)" }}>
+                      {bullet.rest}
+                    </span>
                   </li>
                 );
               })}
             </ul>
           )}
+
+          {/* Footer */}
+          <div className="px-6 py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+              Generated from the latest 15 articles · Refreshes every 3 hours
+            </span>
+          </div>
         </div>
       )}
 
