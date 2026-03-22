@@ -17,19 +17,43 @@ interface Article {
   description: string | null;
 }
 
+function stripHtml(text: string): string {
+  return text
+    .replace(/<[^>]+>/g, "")
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .trim();
+}
+
+function sourceFromUrl(articleUrl: string): string {
+  try {
+    const hostname = new URL(articleUrl).hostname.replace(/^www\./, "");
+    return hostname.charAt(0).toUpperCase() + hostname.slice(1);
+  } catch {
+    return articleUrl;
+  }
+}
+
 async function fetchFeed(url: string): Promise<Article[]> {
   try {
     const feed = await parser.parseURL(url);
     console.log(`[/api/news] Feed ${url.slice(-40)} returned ${feed.items.length} items`);
-    return feed.items.map((item) => ({
-      title: item.title ?? "",
-      source: { name: feed.title ?? new URL(url).hostname },
-      url: item.link ?? "",
-      publishedAt: item.pubDate
-        ? new Date(item.pubDate).toISOString()
-        : new Date().toISOString(),
-      description: item.contentSnippet ?? null,
-    }));
+    return feed.items.map((item) => {
+      const link = item.link ?? "";
+      return {
+        title: stripHtml(item.title ?? ""),
+        source: { name: sourceFromUrl(link) },
+        url: link,
+        publishedAt: item.pubDate
+          ? new Date(item.pubDate).toISOString()
+          : new Date().toISOString(),
+        description: item.contentSnippet ? stripHtml(item.contentSnippet) : null,
+      };
+    });
   } catch (err) {
     console.warn(`[/api/news] Failed to fetch feed ${url}:`, err);
     return [];
@@ -54,7 +78,12 @@ export async function GET() {
 
   try {
     const results = await Promise.all(feedUrls.map(fetchFeed));
-    const all = results.flat();
+    const seen = new Set<string>();
+    const all = results.flat().filter((a) => {
+      if (!a.url || seen.has(a.url)) return false;
+      seen.add(a.url);
+      return true;
+    });
 
     all.sort(
       (a, b) =>
