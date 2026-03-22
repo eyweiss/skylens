@@ -32,13 +32,13 @@ function BriefSkeleton() {
       {Array.from({ length: 5 }).map((_, i) => (
         <div
           key={i}
-          className="flex items-start gap-4 px-5 py-4 animate-pulse"
-          style={{ borderTop: i > 0 ? "1px solid rgba(255,255,255,0.08)" : "none" }}
+          className="flex items-start gap-3 px-6 py-3.5 animate-pulse"
+          style={{ borderTop: i > 0 ? "1px solid var(--border)" : "none" }}
         >
-          <div className="w-28 h-5 rounded-full flex-shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.12)" }} />
+          <div className="w-28 h-5 rounded-full flex-shrink-0" style={{ backgroundColor: "var(--border)" }} />
           <div className="flex-1 space-y-2">
-            <div className="h-3.5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.10)", width: "90%" }} />
-            <div className="h-3.5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.07)", width: "65%" }} />
+            <div className="h-3.5 rounded" style={{ backgroundColor: "var(--border)", width: "90%" }} />
+            <div className="h-3.5 rounded" style={{ backgroundColor: "var(--border)", width: "60%" }} />
           </div>
         </div>
       ))}
@@ -105,14 +105,14 @@ function detectCategory(title: string, description: string | null): Exclude<Cate
   return "General";
 }
 
-const CATEGORY_STYLE: Record<Exclude<Category, "All">, { color: string; bg: string }> = {
-  Airlines:       { color: "#fff", bg: "#2563eb" },
-  Airports:       { color: "#fff", bg: "#7c3aed" },
-  OEMs:           { color: "#fff", bg: "#ea580c" },
-  Regulation:     { color: "#fff", bg: "#dc2626" },
-  Safety:         { color: "#fff", bg: "#d97706" },
-  Sustainability: { color: "#fff", bg: "#16a34a" },
-  General:        { color: "#fff", bg: "#6b7280" },
+const CATEGORY_BADGE_STYLE: Record<string, React.CSSProperties> = {
+  Airlines:       { backgroundColor: "#2563eb", color: "white" },
+  Airports:       { backgroundColor: "#7c3aed", color: "white" },
+  OEMs:           { backgroundColor: "#ea580c", color: "white" },
+  Regulation:     { backgroundColor: "#dc2626", color: "white" },
+  Safety:         { backgroundColor: "#d97706", color: "white" },
+  Sustainability: { backgroundColor: "#16a34a", color: "white" },
+  General:        { backgroundColor: "#6b7280", color: "white" },
 };
 
 const FILTER_OPTIONS: Category[] = ["All", "Airlines", "Airports", "OEMs", "Regulation", "Safety", "Sustainability"];
@@ -240,26 +240,27 @@ export function RecentNews() {
       {/* Intelligence Brief */}
       {(briefLoading || brief || briefError) && (
         <div
-          className="rounded-2xl overflow-hidden"
+          className="rounded-2xl overflow-hidden border"
           style={{
-            background: "linear-gradient(150deg, #0c1a3d 0%, #1e3a5f 100%)",
-            boxShadow: "0 4px 32px rgba(12,26,61,0.45)",
+            backgroundColor: "var(--accent-light)",
+            borderColor: "var(--border)",
           }}
         >
           {/* Card header */}
-          <div className="flex items-center justify-between px-6 pt-5 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <div
+            className="flex items-center justify-between px-6 pt-5 pb-4"
+            style={{ borderBottom: "1px solid var(--border)" }}
+          >
             <div className="flex items-center gap-3">
-              <Sparkles className="w-4 h-4" style={{ color: "#60a5fa" }} />
-              <span className="text-base font-bold tracking-tight" style={{ color: "#fff" }}>
+              <Sparkles className="w-4 h-4" style={{ color: "var(--accent)" }} />
+              <span className="text-base font-bold tracking-tight" style={{ color: "var(--foreground)" }}>
                 Weekly Intelligence Brief
               </span>
               <span
                 className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
                 style={{
-                  backgroundColor: "rgba(96,165,250,0.18)",
-                  color: "#93c5fd",
-                  boxShadow: "0 0 8px rgba(96,165,250,0.25)",
-                  border: "1px solid rgba(96,165,250,0.25)",
+                  backgroundColor: "var(--accent)",
+                  color: "white",
                 }}
               >
                 AI Generated
@@ -271,8 +272,8 @@ export function RecentNews() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-70 disabled:opacity-40"
               style={{
                 backgroundColor: "transparent",
-                color: "rgba(255,255,255,0.65)",
-                border: "1px solid rgba(255,255,255,0.2)",
+                color: "var(--muted)",
+                border: "1px solid var(--border)",
               }}
             >
               <RefreshCw className={`w-3 h-3 ${briefLoading ? "animate-spin" : ""}`} />
@@ -285,7 +286,7 @@ export function RecentNews() {
 
           {briefError && !briefLoading && (
             <div className="px-6 py-5">
-              <p className="text-sm" style={{ color: "#fca5a5" }}>{briefError}</p>
+              <p className="text-sm" style={{ color: "#dc2626" }}>{briefError}</p>
             </div>
           )}
 
@@ -296,22 +297,21 @@ export function RecentNews() {
                 return (
                   <li
                     key={i}
-                    className="flex items-start gap-4 px-6 py-4"
-                    style={{ borderTop: i > 0 ? "1px solid rgba(255,255,255,0.07)" : "none" }}
+                    className="flex items-start gap-3 px-6 py-3.5"
+                    style={{ borderTop: i > 0 ? "1px solid var(--border)" : "none" }}
                   >
                     <span
-                      className="flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wide mt-0.5"
+                      className="flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide mt-0.5"
                       style={{
-                        backgroundColor: `${signalColor}28`,
-                        color: signalColor,
-                        border: `1px solid ${signalColor}55`,
-                        minWidth: "120px",
+                        backgroundColor: signalColor,
+                        color: "white",
+                        minWidth: "108px",
                         textAlign: "center",
                       }}
                     >
                       {bullet.signal || "NOTE"}
                     </span>
-                    <span className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.88)" }}>
+                    <span className="text-sm leading-relaxed" style={{ color: "var(--foreground)" }}>
                       {bullet.rest}
                     </span>
                   </li>
@@ -321,8 +321,8 @@ export function RecentNews() {
           )}
 
           {/* Footer */}
-          <div className="px-6 py-3" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <div className="px-6 py-3" style={{ borderTop: "1px solid var(--border)" }}>
+            <span className="text-xs" style={{ color: "var(--muted)" }}>
               Generated from the latest 15 articles · Refreshes every 3 hours
             </span>
           </div>
@@ -377,7 +377,6 @@ export function RecentNews() {
       {!loading && !error && articles.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filtered.map((article, i) => {
-            const catStyle = CATEGORY_STYLE[article.category as Exclude<Category, "All">];
             return (
               <a
                 key={i}
@@ -390,7 +389,7 @@ export function RecentNews() {
                 {/* Category badge */}
                 <span
                   className="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold"
-                  style={{ backgroundColor: catStyle.bg, color: catStyle.color }}
+                  style={CATEGORY_BADGE_STYLE[article.category] ?? { backgroundColor: "#6b7280", color: "white" }}
                 >
                   {article.category}
                 </span>
