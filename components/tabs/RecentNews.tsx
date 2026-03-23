@@ -1,50 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { RefreshCw, ExternalLink, Calendar, Newspaper, Sparkles } from "lucide-react";
-
-const SIGNAL_COLORS: Record<string, string> = {
-  "MARKET ALERT":    "#dc2626",
-  "COMPETITOR MOVE": "#ea580c",
-  "OPPORTUNITY":     "#16a34a",
-  "REGULATORY":      "#2563eb",
-  "TREND":           "#7c3aed",
-};
-
-function parseBullets(text: string): { signal: string; rest: string }[] {
-  return text
-    .split("\n")
-    .filter((line) => line.trim().startsWith("•"))
-    .map((line) => {
-      const content = line.replace(/^[•\s]+/, "").replace(/\*\*/g, "");
-      const colonIdx = content.indexOf(":");
-      if (colonIdx === -1) return { signal: "", rest: content };
-      return {
-        signal: content.slice(0, colonIdx).trim(),
-        rest: content.slice(colonIdx + 1).trim(),
-      };
-    });
-}
-
-function BriefSkeleton() {
-  return (
-    <div className="space-y-0">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div
-          key={i}
-          className="flex items-start gap-3 px-6 py-3.5 animate-pulse"
-          style={{ borderTop: i > 0 ? "1px solid var(--border)" : "none" }}
-        >
-          <div className="w-28 h-5 rounded-full flex-shrink-0" style={{ backgroundColor: "var(--border)" }} />
-          <div className="flex-1 space-y-2">
-            <div className="h-3.5 rounded" style={{ backgroundColor: "var(--border)", width: "90%" }} />
-            <div className="h-3.5 rounded" style={{ backgroundColor: "var(--border)", width: "60%" }} />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+import { RefreshCw, ExternalLink, Calendar, Newspaper } from "lucide-react";
 
 interface Article {
   title: string;
@@ -138,30 +95,6 @@ export function RecentNews() {
   const [lastFetched, setLastFetched] = useState<Date | null>(null);
   const [activeFilter, setActiveFilter] = useState<Category>("All");
 
-  const [brief, setBrief] = useState<string | null>(null);
-  const [briefLoading, setBriefLoading] = useState(false);
-  const [briefError, setBriefError] = useState<string | null>(null);
-
-  const fetchBrief = useCallback(async (articleList: Article[]) => {
-    if (articleList.length === 0) return;
-    setBriefLoading(true);
-    setBriefError(null);
-    try {
-      const res = await fetch("/api/intelligence-brief", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ articles: articleList.slice(0, 15) }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-      setBrief(data.brief ?? null);
-    } catch (err) {
-      setBriefError(err instanceof Error ? err.message : "Failed to generate brief");
-    } finally {
-      setBriefLoading(false);
-    }
-  }, []);
-
   const fetchNews = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -175,13 +108,12 @@ export function RecentNews() {
       const fetched: Article[] = data.articles || [];
       setArticles(fetched);
       setLastFetched(new Date());
-      fetchBrief(fetched);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch news");
     } finally {
       setLoading(false);
     }
-  }, [fetchBrief]);
+  }, []);
 
   useEffect(() => {
     fetchNews();
@@ -236,98 +168,6 @@ export function RecentNews() {
           Refresh
         </button>
       </div>
-
-      {/* Intelligence Brief */}
-      {(briefLoading || brief || briefError) && (
-        <div
-          className="rounded-2xl overflow-hidden border"
-          style={{
-            backgroundColor: "var(--accent-light)",
-            borderColor: "var(--border)",
-          }}
-        >
-          {/* Card header */}
-          <div
-            className="flex items-center justify-between px-6 pt-5 pb-4"
-            style={{ borderBottom: "1px solid var(--border)" }}
-          >
-            <div className="flex items-center gap-3">
-              <Sparkles className="w-4 h-4" style={{ color: "var(--accent)" }} />
-              <span className="text-base font-bold tracking-tight" style={{ color: "var(--foreground)" }}>
-                Weekly Intelligence Brief
-              </span>
-              <span
-                className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                style={{
-                  backgroundColor: "var(--accent)",
-                  color: "white",
-                }}
-              >
-                AI Generated
-              </span>
-            </div>
-            <button
-              onClick={() => fetchBrief(articles)}
-              disabled={briefLoading}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity hover:opacity-70 disabled:opacity-40"
-              style={{
-                backgroundColor: "transparent",
-                color: "var(--muted)",
-                border: "1px solid var(--border)",
-              }}
-            >
-              <RefreshCw className={`w-3 h-3 ${briefLoading ? "animate-spin" : ""}`} />
-              Refresh
-            </button>
-          </div>
-
-          {/* Content */}
-          {briefLoading && <BriefSkeleton />}
-
-          {briefError && !briefLoading && (
-            <div className="px-6 py-5">
-              <p className="text-sm" style={{ color: "#dc2626" }}>{briefError}</p>
-            </div>
-          )}
-
-          {brief && !briefLoading && (
-            <ul>
-              {parseBullets(brief).map((bullet, i) => {
-                const signalColor = SIGNAL_COLORS[bullet.signal] ?? "#6b7280";
-                return (
-                  <li
-                    key={i}
-                    className="flex items-start gap-3 px-6 py-3.5"
-                    style={{ borderTop: i > 0 ? "1px solid var(--border)" : "none" }}
-                  >
-                    <span
-                      className="flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide mt-0.5"
-                      style={{
-                        backgroundColor: signalColor,
-                        color: "white",
-                        minWidth: "108px",
-                        textAlign: "center",
-                      }}
-                    >
-                      {bullet.signal || "NOTE"}
-                    </span>
-                    <span className="text-sm leading-relaxed" style={{ color: "var(--foreground)" }}>
-                      {bullet.rest}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-
-          {/* Footer */}
-          <div className="px-6 py-3" style={{ borderTop: "1px solid var(--border)" }}>
-            <span className="text-xs" style={{ color: "var(--muted)" }}>
-              Generated from the latest 15 articles · Refreshes every 3 hours
-            </span>
-          </div>
-        </div>
-      )}
 
       {/* Category filters */}
       <div className="flex gap-2 flex-wrap">
