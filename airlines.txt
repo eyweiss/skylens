@@ -1,0 +1,238 @@
+
+	9 Air
+	Aegean Airlines
+	Aer Lingus
+	Aeroflot Russian Airlines
+	Aerolineas Argentinas
+	Aeromexico
+	Air Algerie
+	Air Arabia
+	Air Astana
+	Air Botswana
+	Air Busan
+	Air Cambodia
+	Air Canada
+	Air Canada rouge
+	Air Caraibes
+	Air China
+	Air Dolomiti
+	Air Europa
+	Air France
+	Air India
+	Air India Express
+	Air Macau
+	Air Madagascar
+	Air Malta
+	Air Mauritius
+	Air Moldova
+	Air Namibia
+	Air New Zealand
+	Air Niugini
+	Air Nostrum
+	Air Serbia
+	Air Seychelles
+	Air Tahiti Nui
+	Air Transat
+	Air Vanuatu
+	AirAsia
+	AirAsia X
+	AirAsia India
+	airBaltic
+	airblue
+	Aircalin
+	Alaska Airlines
+	Allegiant Air
+	American Airlines
+	ANA All Nippon Airways
+	AnadoluJet
+	Arik Air
+	Asiana Airlines
+	Austrian Airlines
+	Avianca
+	Azerbaijan Airlines
+	Azul Brazilian Airlines
+	Bahamasair
+	Bamboo Airways
+	Bangkok Airways
+	Batik Air
+	Belavia Belarusian Airlines
+	Biman Bangladesh Airlines
+	Blue Air
+	Boliviana de Aviación
+	British Airways
+	Brussels Airlines
+	Bulgaria Air
+	Cabo Verde Airlines
+	Capital Airlines
+	Caribbean Airlines
+	Cathay Pacific Airways
+	Cayman Airways
+	Cebu Pacific
+	Chengdu Airlines
+	China Airlines
+	China Eastern Airlines
+	China Express Airlines
+	China Southern Airlines
+	China United Airlines
+	Chongqing Airlines
+	Citilink
+	Colorful Guizhou Airlines
+	Condor Airlines
+	Copa Airlines
+	Corendon Airlines
+	Croatia Airlines
+	CSA Czech Airlines
+	Dalian Airlines
+	Delta Air Lines
+	Discover Airlines
+	Donghai Airlines
+	Eastar Jet
+	Easyfly
+	easyJet
+	Edelweiss Air
+	Egyptair
+	El Al Israel Airlines
+	Emirates
+	Ethiopian Airlines
+	Etihad Airways
+	Eurowings
+	EVA Air
+	fastjet
+	Fiji Airways
+	Finnair
+	Flair Airlines
+	Flyadeal
+	FlyArystan
+	flydubai
+	flynas
+	FlyOne
+	FlySafair
+	French Bee
+	Frontier Airlines
+	Fuzhou Airlines
+	Garuda Indonesia
+	GoAir
+	GOL Airlines
+	Gulf Air
+	GX Airlines (Beibu Gulf Air)
+	Hainan Airlines
+	Hawaiian Airlines
+	Hebei Airlines
+	Hong Kong Airlines
+	HK Express
+	Iberia
+	Icelandair
+	IndiGo
+	Interjet
+	ITA Airways
+	Japan Airlines
+	Jazeera Airways
+	Jeju Air
+	Jet2.com
+	JetBlue Airways
+	Jetstar Airways
+	Jetstar Asia Airways
+	Jiangxi Airlines
+	Jin Air
+	Juneyao Airlines
+	Kenya Airways
+	KLM Royal Dutch Airlines
+	Korean Air
+	Kulula
+	Kunming Airlines
+	Kuwait Airways
+	La Compagnie
+	LAM Mozambique Airlines
+	Lao Airlines
+	LATAM Airlines
+	Lion Air
+	LOT Polish Airlines
+	Loong Air
+	Lucky Air
+	Lufthansa
+	Luxair
+	Malaysia Airlines
+	Malindo Air
+	Mandarin Airlines
+	Mango
+	MIAT Mongolian Airlines
+	Middle East Airlines
+	Myanmar Airways International
+	Myanmar National Airlines
+	Nile Air
+	Nok Air
+	Norwegian
+	Nouvelair
+	Okay Airways
+	Oman Air
+	Onur Air
+	Peach Aviation
+	Pegasus Airlines
+	Philippine Airlines
+	PIA Pakistan International Airlines
+	Porter Airlines
+	Qantas Airways
+	Qatar Airways
+	Qingdao Airlines
+	Royal Air Maroc
+	Royal Brunei Airlines
+	Royal Jordanian Airlines
+	Ruili Airlines
+	Rwandair
+	Ryanair
+	S7 Siberia Airlines
+	SAS Scandinavian Airlines
+	SATA Azores Airlines
+	Saudi Arabian Airlines
+	Scoot
+	Shandong Airlines
+	Shenzhen Airlines
+	Sichuan Airlines
+	SilkAir
+	Silver Airways
+	Singapore Airlines
+	SKY Airline
+	Skymark Airlines
+	Solaseed Air
+	South African Airways
+	Southwest Airlines
+	SpiceJet
+	Spirit Airlines
+	Spring Airlines
+	SriLankan Airlines
+	Sriwijaya Air
+	Star Flyer
+	STARLUX Airlines
+	Sun Country Airlines
+	SunExpress
+	Sunwing Airlines
+	Swiss International Air Lines
+	Swoop
+	TAP Portugal
+	TAROM
+	Thai Airways
+	Tianjin Airlines
+	Transavia France
+	Transavia
+	TUI Airways
+	Tunisair
+	Turkish Airlines
+	T'way Air
+	United Airlines
+	Ural Airlines
+	Urumqi Air
+	VietJet Air
+	Vietnam Airlines
+	Virgin Atlantic
+	Virgin Australia
+	Vistara
+	Viva Aerobus
+	Viva Air
+	Volaris
+	Volotea
+	Vueling Airlines
+	West Air
+	WestJet Airlines
+	Wizz Air
+	Xiamen Airlines
+
