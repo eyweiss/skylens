@@ -39,6 +39,9 @@ export default function RootLayout({
         </Script>
         <ThemeProvider>
           {children}
+          <footer className="mt-auto py-4 text-center text-xs text-muted-foreground">
+            © 2026 Eyal Weiss. All rights reserved.
+          </footer>
           <Analytics />
         </ThemeProvider>
       </body>
