@@ -15,6 +15,8 @@ import { RecentNews } from "@/components/tabs/RecentNews";
 import { CompetitorSpotlight } from "@/components/tabs/CompetitorSpotlight";
 import { RequestCoverage } from "@/components/tabs/RequestCoverage";
 import { About } from "@/components/tabs/About";
+import { Guide } from "@/components/tabs/Guide";
+import { WelcomeModal } from "@/components/WelcomeModal";
 
 type Tab =
   | "Market Pulse"
@@ -27,6 +29,7 @@ type Tab =
   | "Recent News"
   | "Competitor Spotlight"
   | "Request Coverage"
+  | "Guide"
   | "About";
 
 const tabs: Tab[] = [
@@ -40,6 +43,7 @@ const tabs: Tab[] = [
   "Recent News",
   "Competitor Spotlight",
   "Request Coverage",
+  "Guide",
   "About",
 ];
 
@@ -55,6 +59,7 @@ const TAB_SLUG: Record<Tab, string> = {
   "Recent News":         "recent-news",
   "Competitor Spotlight":"competitor-spotlight",
   "Request Coverage":    "request-coverage",
+  "Guide":               "guide",
   "About":               "about",
 };
 
@@ -76,6 +81,7 @@ const tabComponents: Record<Tab, React.ComponentType> = {
   "Recent News":         RecentNews,
   "Competitor Spotlight":CompetitorSpotlight,
   "Request Coverage":    RequestCoverage,
+  "Guide":               Guide,
   "About":               About,
 };
 
@@ -98,6 +104,7 @@ function HomeContent() {
 
   return (
     <>
+      <WelcomeModal />
       {/* Tab bar */}
       <div
         className="sticky top-[65px] z-40 border-b"

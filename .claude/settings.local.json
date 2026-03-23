@@ -4,7 +4,9 @@
       "Bash(ls D:PyscriptsUAS-siteskylens/*.env* D:PyscriptsUAS-siteskylens/.env*)",
       "Bash(npm run:*)",
       "Bash(npm install:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(find /d/Pyscripts/UAS-site/strata-ci -name *.tsx -not -path */node_modules/*)",
+      "Bash(find /d/Pyscripts/UAS-site/marketclarity -name *.tsx -not -path */node_modules/*)"
     ]
   }
 }
