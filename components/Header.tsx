@@ -19,6 +19,14 @@ export function Header() {
       }}
     >
       <div className="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <a
+            href="https://www.marketclarity.tech"
+            className="text-xs transition-opacity hover:opacity-100 opacity-50 whitespace-nowrap"
+            style={{ color: "var(--muted)" }}
+          >
+            ← MarketClarity
+          </a>
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-lg flex items-center justify-center"
@@ -34,6 +42,7 @@ export function Header() {
               Commercial Aviation Market Intelligence
             </div>
           </div>
+        </div>
         </div>
 
         <div className="flex items-center gap-2">
