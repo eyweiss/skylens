@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { PasswordGate } from "@/components/PasswordGate";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 
@@ -38,10 +39,12 @@ export default function RootLayout({
           `}
         </Script>
         <ThemeProvider>
-          {children}
-          <footer className="mt-auto py-4 text-center text-xs text-muted-foreground">
-            © 2026 Eyal Weiss. All rights reserved.
-          </footer>
+          <PasswordGate>
+            {children}
+            <footer className="mt-auto py-4 text-center text-xs text-muted-foreground">
+              © 2026 Eyal Weiss. All rights reserved.
+            </footer>
+          </PasswordGate>
           <Analytics />
         </ThemeProvider>
       </body>
